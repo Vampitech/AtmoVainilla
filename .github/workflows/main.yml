@@ -45,7 +45,7 @@ jobs:
           unzip atmos.zip -d unzip_folder
           unzip sigma.zip -d unzip_folder
           unzip hkt.zip -d unzip_folder
-          mv unzip_folder/hekate_*.bin payload.bin
+          mv unzip_folder/hekate_*.bin unzip_folder/payload.bin
           mv dbi.nro unzip_folder/switch
           mkdir unzip_folder/config unzip_folder/config/sys-patch
       - name: Generate NintenWall
