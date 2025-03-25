@@ -14,24 +14,29 @@ jobs:
       - name: Fetch Latest Releases from GH repos
         run: |
           ATMOS_URL="https://api.github.com/repos/atmosphere-nx/atmosphere/releases/latest"
+          HKT_URL="https://api.github.com/repos/ctcaer/hekate/releases/latest"
           SIGMA_URL="https://api.github.com/repos/impeeza/sys-patch/releases/latest"
           DBI_URL="https://api.github.com/repos/rashevskyv/dbi/releases"
 
           RESPONSE_1=$(curl -s $ATMOS_URL)
-          RESPONSE_2=$(curl -s $SIGMA_URL)
-          RESPONSE_3=$(curl -s $DBI_URL)
+          RESPONSE_2=$(curl -s $HKT_URL)
+          RESPONSE_3=$(curl -s $SIGMA_URL)
+          RESPONSE_4=$(curl -s $DBI_URL)
 
-          ZIP_ATMOS=$(echo "$RESPONSE_1" | jq -r '.assets[0].browser_download_url') 
-          ZIP_SIGMA=$(echo "$RESPONSE_2" | jq -r '.assets[0].browser_download_url')
-          ZIP_DBI=$(echo "$RESPONSE_3" | jq -r '.[] | select(.tag_name == "658") | .assets[1].browser_download_url')
+          ZIP_ATMOS=$(echo "$RESPONSE_1" | jq -r '.assets[0].browser_download_url')
+          ZIP_HKT=$(echo "$RESPONSE_2" | jq -r '.assets[0].browser_download_url')
+          ZIP_SIGMA=$(echo "$RESPONSE_3" | jq -r '.assets[0].browser_download_url')
+          ZIP_DBI=$(echo "$RESPONSE_4" | jq -r '.[] | select(.tag_name == "658") | .assets[1].browser_download_url')
 
           echo "ZIP_ATMOS=$ZIP_ATMOS" >> $GITHUB_ENV
+          echo "ZIP_HKT=$ZIP_HKT" >> $GITHUB_ENV
           echo "ZIP_SIGMA=$ZIP_SIGMA" >> $GITHUB_ENV
           echo "ZIP_DBI=$ZIP_DBI" >> $GITHUB_ENV
           
       - name: Download STUFF XD
         run: |
           curl -L -o atmos.zip $ZIP_ATMOS
+          curl -L -o hkt.zip $ZIP_HKT
           curl -L -o sigma.zip $ZIP_SIGMA
           curl -L -o dbi.nro $ZIP_DBI
       - name: Unpacking the bag
@@ -39,6 +44,8 @@ jobs:
           mkdir unzip_folder
           unzip atmos.zip -d unzip_folder
           unzip sigma.zip -d unzip_folder
+          unzip hkt.zip -d unzip_folder
+          mv unzip_folder/hekate_*.bin payload.bin
           mv dbi.nro unzip_folder/switch
           mkdir unzip_folder/config unzip_folder/config/sys-patch
       - name: Generate NintenWall
