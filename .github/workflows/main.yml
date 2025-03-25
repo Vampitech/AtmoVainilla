@@ -1,0 +1,103 @@
+name: Basic Atmos Vanilla Automated
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * 1'  # Este workflow se ejecutará todos los lunes a las 00:00 UTC
+
+jobs:
+  download_and_process_files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Fetch Latest Releases from GH repos
+        run: >
+          ATMOS_URL="https://api.github.com/repos/atmosphere-nx/atmosphere/releases/latest"
+          SIGMA_URL="https://api.github.com/repos/impeeza/sys-patch/releases/latest"
+          DBI_URL="https://api.github.com/repos/rashevskyv/dbi/releases"
+          
+          RESPONSE_1=$(curl -s $ATMOS_URL)
+          RESPONSE_2=$(curl -s $SIGMA_URL)
+          RESPONSE_3=$(curl -s $DBI_URL)
+
+          ZIP_ATMOS=$(echo "$RESPONSE_1" | jq -r '.assets[0].browser_download_url')
+          ZIP_SIGMA=$(echo "$RESPONSE_2" | jq -r '.assets[0].browser_download_url')
+          ZIP_DBI=$(echo "$RESPONSE_3" | jq -r '.[] | select(.tag_name == "658") | .assets[1].browser_download_url')
+
+          echo "ZIP_ATMOS=$ZIP_ATMOS" >> $GITHUB_ENV
+          echo "ZIP_SIGMA=$ZIP_SIGMA" >> $GITHUB_ENV
+          echo "ZIP_DBI=$ZIP_DBI" >> $GITHUB_ENV
+          
+      - name: Download STUFF XD
+        run: |
+          curl -L -o atmos.zip $ZIP_ATMOS
+          curl -L -o sigma.zip $ZIP_SIGMA
+          curl -L -o dbi.nro $ZIP_DBI
+
+      - name: Unpacking the bag
+        run: |
+          mkdir unzip_folder
+          unzip atmos.zip -d unzip_folder
+          unzip sigma.zip -d unzip_folder
+          mv dbi.nro unzip_folder/switch
+
+      - name: Generate NintenWall
+        run: |
+          cat <<EOF > unzip_folder/exosphere.ini
+          [exosphere]
+          debugmode=1
+          debugmode_user=0
+          disable_user_exception_handlers=0
+          enable_user_pmu_access=0
+          blank_prodinfo_sysmmc=0
+          blank_prodinfo_emummc=1
+          allow_writing_to_cal_sysmmc=0
+          EOF
+      - name: Generate Ligma
+        run: |
+         mkdir unzip_folder/config unzip_folder/sys-patch
+         cat <<EOF > unzip_folder/config/sys-patch/config.ini
+         [options]
+         version_skip=1
+         patch_sysmmc=1
+         patch_emummc=1
+         enable_logging=1
+         [fs]
+         noacidsigchk1=1
+         noacidsigchk2=1
+         noncasigchk_old=1
+         noncasigchk_new=1
+         noncasigchk_new2=1
+         nocntchk_old=1
+         nocntchk_new=1
+         nocntchk=1
+         nocntchk_FW19=1
+         [ldr]
+         noacidsigchk=1
+         debug_flag_off=0
+         debug_flag=0
+         [es]
+         es1=1
+         es2=1
+         es3=1
+         es4=1
+         es5=1
+         es6=1
+         es7=1
+         es7_FW18=1
+         es7_FW18-19=1
+         [nifm]
+         ctest=0
+         [erpt]
+         no_erpt=1
+         EOF
+      - name: Serve tha cake
+        uses: actions/upload-artifact@v4
+        with:
+          name: atmos_vanilla
+          path: unzip_folder/*
