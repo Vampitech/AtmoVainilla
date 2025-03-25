@@ -24,8 +24,8 @@ jobs:
           ZIP_SIGMA=$(echo "$RESPONSE_2" | jq -r '.assets[0].browser_download_url')
           ZIP_DBI=$(echo "$RESPONSE_3" | jq -r '.[] | select(.tag_name == "658") | .assets[1].browser_download_url')
 
-          echo "ZIP_ATMOS=$ZIP_ATMOS" >> $GITHUB_ENV 
-          echo "ZIP_SIGMA=$ZIP_SIGMA" >> $GITHUB_ENV 
+          echo "ZIP_ATMOS=$ZIP_ATMOS" >> $GITHUB_ENV
+          echo "ZIP_SIGMA=$ZIP_SIGMA" >> $GITHUB_ENV
           echo "ZIP_DBI=$ZIP_DBI" >> $GITHUB_ENV
           
       - name: Download STUFF XD
