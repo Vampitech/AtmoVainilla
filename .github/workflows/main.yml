@@ -17,7 +17,8 @@ jobs:
           SIGMA_URL="https://api.github.com/repos/impeeza/sys-patch/releases/latest"
           DBI_URL="https://api.github.com/repos/rashevskyv/dbi/releases"
 
-          RESPONSE_1=$(curl -s $ATMOS_URL) RESPONSE_2=$(curl -s $SIGMA_URL)
+          RESPONSE_1=$(curl -s $ATMOS_URL)
+          RESPONSE_2=$(curl -s $SIGMA_URL)
           RESPONSE_3=$(curl -s $DBI_URL)
 
           ZIP_ATMOS=$(echo "$RESPONSE_1" | jq -r '.assets[0].browser_download_url') 
