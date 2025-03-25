@@ -48,6 +48,34 @@ jobs:
           mv unzip_folder/hekate_*.bin unzip_folder/payload.bin
           mv dbi.nro unzip_folder/switch
           mkdir unzip_folder/config unzip_folder/config/sys-patch
+      - name: Generate Boot Entries
+        run: |
+          cat << EOF > unzip_folder/bootloader/hekate_ipl.ini
+          [config]
+          autoboot=0
+          autoboot_list=0
+          bootwait=0
+          backlight=100
+          noticker=0
+          autohosoff=0
+          autonogc=1
+          updater2p=0
+          bootprotect=0
+          
+          
+          {-- Custom Firmwares --}
+          
+          [Atmosphere]
+          fss0=atmosphere/package3
+          atmosphere=1
+          icon=NEXT/BL/res/AMS.bmp
+          {}
+          
+          [Stock]
+          fss0=atmosphere/package3
+          stock=1
+          emummc_force_disable=1
+          {}
       - name: Generate NintenWall
         run: |
           cat <<EOF > unzip_folder/exosphere.ini
