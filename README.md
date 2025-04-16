@@ -5,6 +5,7 @@
 ![](https://img.shields.io/github/v/release/Atmosphere-NX/Atmosphere?color=green&label=atmosphere&style=flat)
 ![](https://img.shields.io/github/v/release/CTCaer/Hekate?color=green&label=hekate&style=flat)
 ![](https://img.shields.io/github/v/release/impeeza/sys-patch?color=green&label=sys-patch&style=flat)
+![](https://img.shields.io/github/v/release/rashevskyv/dbi?filter=658*&color=red&label=DBI&style=flat)
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
