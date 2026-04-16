@@ -26,6 +26,8 @@ bootloader/payloads/TegraExplorer.bin
 bootloader/res/background.bmp
 bootloader/hekate_ipl.autoams
 bootloader/hekate_ipl.swr
+bootloader/nyx.ini
+bootloader/nyx.ql
 emuiibo/
 config/aio-switch-updater/
 config/MissionControl/
