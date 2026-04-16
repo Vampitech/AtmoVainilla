@@ -190,9 +190,9 @@ jobs:
         shell: bash
         run: |
           cd output
-          zip -r ../switch-clean-package.zip .
+          zip -r ../AtmoVainilla.zip .
           cd ..
-          du -sh switch-clean-package.zip
+          du -sh AtmoVainilla.zip
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -200,7 +200,7 @@ jobs:
           tag_name: ${{ inputs.version }}
           name: ${{ inputs.release_name }}
           body_path: RELEASE_NOTES.md
-          files: switch-clean-package.zip
+          files: AtmoVainilla.zip
           draft: false
           prerelease: false
         env:
