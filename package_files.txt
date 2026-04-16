@@ -1,0 +1,9 @@
+UPD/atmosphere/
+UPD/bootloader/
+UPD/config/
+UPD/NEXT/
+UPD/switch/
+UPD/boot.dat
+UPD/boot.ini
+UPD/exosphere.ini
+UPD/hbmenu.nro
