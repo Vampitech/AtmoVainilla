@@ -4,26 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version tag for the release (e.g. v1.0.0)'
+        description: 'Version tag for the release (e.g. 1.0.0)'
         required: true
         default: 'v1.0.0'
       release_name:
         description: 'Release display name'
         required: true
-        default: 'Switch Clean Package v1.0.0'
+        default: 'AtmoVainilla 1.0.0'
       zip_root:
         description: 'Carpeta raiz dentro del ZIP (ej: UPD). Dejar vacio si no aplica'
         required: false
         default: 'UPD'
-      hekate_mode:
-        description: 'How to handle hekate_ipl.ini'
-        required: true
-        type: choice
-        options:
-          - append
-          - replace-file
-          - skip
-        default: append
 
 permissions:
   contents: write
@@ -86,27 +77,6 @@ jobs:
             fi
           done < package_files.txt
 
-      - name: Apply exclusions
-        shell: bash
-        run: |
-          if [ ! -f package_exclude.txt ]; then
-            echo "No package_exclude.txt found, skipping exclusions."
-            exit 0
-          fi
-
-          while IFS= read -r line || [ -n "$line" ]; do
-            [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
-
-            TARGET="output/$line"
-
-            if [ -e "$TARGET" ]; then
-              rm -rf "$TARGET"
-              echo "Excluded: $line"
-            else
-              echo "WARNING: Exclude target not found: $TARGET"
-            fi
-          done < package_exclude.txt
-
       - name: Apply file operations
         shell: bash
         run: |
@@ -153,8 +123,28 @@ jobs:
             esac
           done < package_moves.txt
 
+      - name: Apply exclusions
+        shell: bash
+        run: |
+          if [ ! -f package_exclude.txt ]; then
+            echo "No package_exclude.txt found, skipping exclusions."
+            exit 0
+          fi
+
+          while IFS= read -r line || [ -n "$line" ]; do
+            [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
+
+            TARGET="output/$line"
+
+            if [ -e "$TARGET" ]; then
+              rm -rf "$TARGET"
+              echo "Excluded: $line"
+            else
+              echo "WARNING: Exclude target not found: $TARGET"
+            fi
+          done < package_exclude.txt
+
       - name: Patch hekate_ipl.ini
-        if: ${{ inputs.hekate_mode != 'skip' }}
         shell: bash
         run: |
           mkdir -p output/bootloader
@@ -164,21 +154,10 @@ jobs:
             exit 0
           fi
 
-          TARGET="output/bootloader/hekate_ipl.ini"
-
-          if [ "${{ inputs.hekate_mode }}" = "replace-file" ]; then
-            cp hekate_entries.ini "$TARGET"
-            echo "hekate_ipl.ini replaced."
-          elif [ "${{ inputs.hekate_mode }}" = "append" ]; then
-            touch "$TARGET"
-            printf '\n' >> "$TARGET"
-            cat hekate_entries.ini >> "$TARGET"
-            printf '\n' >> "$TARGET"
-            echo "hekate_ipl.ini appended."
-          fi
-
+          cp hekate_entries.ini output/bootloader/hekate_ipl.ini
+          echo "hekate_ipl.ini replaced."
           echo "--- Final hekate_ipl.ini ---"
-          cat "$TARGET"
+          cat output/bootloader/hekate_ipl.ini
 
       - name: Show final output structure
         shell: bash
