@@ -144,6 +144,19 @@ jobs:
             fi
           done < package_exclude.txt
 
+      - name: Patch exosphere.ini
+        shell: bash
+        run: |
+          if [ ! -f exosphere.ini ]; then
+            echo "No exosphere.ini found in repo, skipping."
+            exit 0
+          fi
+
+          cp exosphere.ini output/exosphere.ini
+          echo "exosphere.ini replaced."
+          echo "--- Final exosphere.ini ---"
+          cat output/exosphere.ini
+
       - name: Patch hekate_ipl.ini
         shell: bash
         run: |
