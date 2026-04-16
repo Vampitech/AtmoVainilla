@@ -31,6 +31,6 @@ Creditos
 [Impeeza](https://github.com/impeeza/)\
 [Huntereb](https://github.com/Huntereb)\
 [Rashevskyv](https://github.com/rashevskyv)\
-[JKSV](https://github.com/J-D-K)
+[J-D-K](https://github.com/J-D-K)
 
 
