@@ -58,6 +58,7 @@ switch/sphaira/
 switch/Ultrahand-Reload/
 switch/EdiZon/
 switch/ldnmitm_config/
+switch/.next-updater.nro.star
 switch/.next-updater.nro
 switch/ftpd.nro
 switch/ftpd.nro
