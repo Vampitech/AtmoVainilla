@@ -49,6 +49,7 @@ switch/.overlays/sys-clk-overlay.ovl
 switch/.overlays/Status-Monitor-Overlay.ovl
 switch/.packages/
 switch/aio-switch-updater/
+switch/Amiigo/
 switch/breeze/
 switch/EdiZon/
 switch/ldnmitm_config/
