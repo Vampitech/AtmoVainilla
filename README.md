@@ -17,14 +17,20 @@ Contiene
   * exosphere.ini (incognito)
   * [sys-patch](https://github.com/impeeza/sys-patch)
 - [Hekate](https://github.com/CTCaer/hekate)
-  * Entradas de inicio (Stock y Emunand)
+- [DBI](https://github.com/rashevskyv/dbi/)
+- [Awoo Installer](https://github.com/Huntereb/Awoo-Installer)
+- [JKSV](https://github.com/J-D-K/JKSV/)
+  
+  
 
 
 Creditos
 =====
 [Atmosphere-NX](https://github.com/Atmosphere-NX)\
 [CTCaer](https://github.com/CTCaer)\
-[iTotalJustice](https://github.com/ITotalJustice)\
-[Impeeza](https://github.com/impeeza/)
+[Impeeza](https://github.com/impeeza/)\
+[Huntereb](https://github.com/Huntereb)\
+[Rashevskyv](https://github.com/rashevskyv)\
+[JKSV](https://github.com/J-D-K)
 
 
