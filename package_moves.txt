@@ -1,4 +1,4 @@
 copy|bootloader/update.bin|payload.bin
 move|NEXT/BL/res/AMS.bmp|bootloader/res/AMS.bmp
 move|NEXT/BL/res/AMS-sys.bmp|bootloader/res/AMS-sys.bmp
-move|NEXT/BL/res/AMS-stock.bmp|bootloader/res/stock.bmp
+move|NEXT/BL/res/stock.bmp|bootloader/res/stock.bmp
