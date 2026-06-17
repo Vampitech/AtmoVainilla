@@ -47,30 +47,23 @@ jobs:
           ZIP_ROOT: ${{ inputs.zip_root }}
         run: |
           mkdir -p output
-
           while IFS= read -r line || [ -n "$line" ]; do
             [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
-
             SRC="extracted/$line"
-
             if [[ -n "$ZIP_ROOT" && "$line" == "$ZIP_ROOT/"* ]]; then
               STRIPPED="${line#${ZIP_ROOT}/}"
             else
               STRIPPED="$line"
             fi
-
             DEST="output/$STRIPPED"
-
             if [ -e "$SRC" ]; then
               mkdir -p "$(dirname "$DEST")"
-
               if [ -d "$SRC" ]; then
                 mkdir -p "$DEST"
                 cp -a "$SRC"/. "$DEST"/
               else
                 cp -a "$SRC" "$DEST"
               fi
-
               echo "Copied: $line -> $STRIPPED"
             else
               echo "WARNING: Not found: $SRC"
@@ -84,20 +77,15 @@ jobs:
             echo "No package_moves.txt found, skipping file operations."
             exit 0
           fi
-
           while IFS='|' read -r action src dst || [ -n "$action" ]; do
             [[ "$action" =~ ^#.*$ || -z "$action" ]] && continue
-
             SRC="output/$src"
             DST="output/$dst"
-
             if [ ! -e "$SRC" ]; then
               echo "WARNING: Source not found: $SRC"
               continue
             fi
-
             mkdir -p "$(dirname "$DST")"
-
             case "$action" in
               copy)
                 if [ -d "$SRC" ]; then
@@ -123,6 +111,11 @@ jobs:
             esac
           done < package_moves.txt
 
+      - name: Fix output permissions
+        shell: bash
+        run: |
+          chmod -R u+rwX output/
+
       - name: Apply exclusions
         shell: bash
         run: |
@@ -130,13 +123,11 @@ jobs:
             echo "No package_exclude.txt found, skipping exclusions."
             exit 0
           fi
-
           while IFS= read -r line || [ -n "$line" ]; do
             [[ "$line" =~ ^#.*$ || -z "$line" ]] && continue
-
             TARGET="output/$line"
-
             if [ -e "$TARGET" ]; then
+              chmod -R u+rwX "$TARGET"
               rm -rf "$TARGET"
               echo "Excluded: $line"
             else
@@ -151,7 +142,6 @@ jobs:
             echo "No exosphere.ini found in repo, skipping."
             exit 0
           fi
-
           cp exosphere.ini output/exosphere.ini
           echo "exosphere.ini replaced."
           echo "--- Final exosphere.ini ---"
@@ -161,12 +151,10 @@ jobs:
         shell: bash
         run: |
           mkdir -p output/bootloader
-
           if [ ! -f hekate_entries.ini ]; then
             echo "No hekate_entries.ini found, skipping hekate patch."
             exit 0
           fi
-
           cp hekate_entries.ini output/bootloader/hekate_ipl.ini
           echo "hekate_ipl.ini replaced."
           echo "--- Final hekate_ipl.ini ---"
