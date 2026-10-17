@@ -28,10 +28,52 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Download AIO ZIP
+        shell: bash
+        env:
+          CI_TOKEN: ${{ secrets.CF_CI_TOKEN }}
+          ZIP_URL: "https://vampitech.net/switch/updater/NeXT.zip"
         run: |
-          curl -L -v -o NeXT.zip "https://vampitech.net/switch/updater/NeXT.zip"
-          file NeXT.zip
+          if [ -z "$CI_TOKEN" ]; then
+            echo "ERROR: falta el secret CF_CI_TOKEN (Settings > Secrets and variables > Actions)"
+            exit 1
+          fi
+
+          # -f: falla en 4xx/5xx en vez de guardar la pagina de error como ZIP
+          # -D: guarda headers para diagnostico (no se usa -v para no exponer cabeceras de la peticion)
+          if ! curl -L -f -sS --retry 3 --retry-delay 5 --retry-all-errors \
+              -A "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36" \
+              -H "X-CI-Token: $CI_TOKEN" \
+              -D headers.txt -o NeXT.zip "$ZIP_URL"; then
+            echo "ERROR: la descarga fallo. Headers de respuesta:"
+            cat headers.txt 2>/dev/null || true
+            if grep -qi "cf-mitigated" headers.txt 2>/dev/null; then
+              echo ">>> Cloudflare esta aplicando un challenge. Revisa la regla WAF de bypass y el valor de CF_CI_TOKEN."
+            fi
+            exit 1
+          fi
+
+          echo "--- Headers de respuesta ---"
+          cat headers.txt
           ls -lh NeXT.zip
+          file NeXT.zip
+
+          # Validar que sea realmente un ZIP y no una pagina de challenge
+          if ! file NeXT.zip | grep -qi "zip archive"; then
+            echo "ERROR: el archivo descargado no es un ZIP. Primeros bytes:"
+            head -c 300 NeXT.zip
+            echo
+            exit 1
+          fi
+
+          # Validar tamano minimo (1 MB) para detectar descargas truncadas
+          SIZE=$(stat -c%s NeXT.zip)
+          if [ "$SIZE" -lt 1048576 ]; then
+            echo "ERROR: NeXT.zip pesa solo $SIZE bytes, demasiado pequeno"
+            exit 1
+          fi
+
+          # Validar integridad
+          unzip -tq NeXT.zip
 
       - name: Extract ZIP
         run: |
