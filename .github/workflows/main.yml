@@ -29,7 +29,7 @@ jobs:
 
       - name: Download AIO ZIP
         run: |
-          curl -L -v -o NeXT.zip "https://hyrule.vampitech.net/updater/NeXT.zip"
+          curl -L -v -o NeXT.zip "https://vampitech.net/switch/updater/NeXT.zip"
           file NeXT.zip
           ls -lh NeXT.zip
 
