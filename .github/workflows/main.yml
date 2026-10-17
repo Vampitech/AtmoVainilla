@@ -29,14 +29,11 @@ jobs:
 
       - name: Download AIO ZIP
         shell: bash
-        env:
-          CI_TOKEN: ${{ secrets.CF_CI_TOKEN }}
-          ZIP_URL: "https://vampitech.net/switch/updater/NeXT.zip"
         run: |
-          if [ -z "$CI_TOKEN" ]; then
-            echo "ERROR: falta el secret CF_CI_TOKEN (Settings > Secrets and variables > Actions)"
-            exit 1
-          fi
+          curl -L -f -sS --retry 3 --retry-delay 5 \
+            -o NeXT.zip "https://github.com/Vampitech/NeXT/releases/download/3.57/NeXT.zipp"
+          file NeXT.zip | grep -qi "zip archive" || { echo "ERROR: no es un ZIP"; exit 1; }
+          unzip -tq NeXT.zip
 
           # -f: falla en 4xx/5xx en vez de guardar la pagina de error como ZIP
           # -D: guarda headers para diagnostico (no se usa -v para no exponer cabeceras de la peticion)
